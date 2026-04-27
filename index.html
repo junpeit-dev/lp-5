@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SURURIMU - 我慢しないダイエット</title>
+  
+  <!-- Tailwind CSS (デザインを整えるためのツール) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome (アイコンを表示するためのツール) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Reactをブラウザで動かすための仕組み -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <!-- ここにLPが表示されます -->
+  <div id="root"></div>
+
+  <!-- ここから下がLPの中身（Reactのコード）です -->
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    function App() {
+      const [isVisible, setIsVisible] = useState(false);
+
+      // スクロール時に要素をフワッと表示させるための処理
+      useEffect(() => {
+        setIsVisible(true);
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+              }
+            });
+          },
+          { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+        );
+
+        document.querySelectorAll('.fade-in-section').forEach((el) => {
+          observer.observe(el);
+        });
+
+        return () => observer.disconnect();
+      }, []);
+
+      return (
+        <div className="bg-gray-50 min-h-screen font-sans text-gray-800">
+          <style>
+            {`
+              /* 飛び出しアニメーション */
+              @keyframes popIn {
+                0% { transform: scale(0.5); opacity: 0; }
+                70% { transform: scale(1.1); opacity: 1; }
+                100% { transform: scale(1); opacity: 1; }
+              }
+              .animate-pop-in {
+                opacity: 0;
+                animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+              }
+              .delay-100 { animation-delay: 0.1s; }
+              .delay-300 { animation-delay: 0.3s; }
+              .delay-500 { animation-delay: 0.5s; }
+              
+              /* スクロールフェードイン */
+              .fade-in-section {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+              }
+              .fade-in-section.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+              }
+
+              /* ボタンがフワフワするアニメーション */
+              @keyframes pulse-soft {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.03); }
+              }
+              .animate-pulse-soft {
+                animation: pulse-soft 2s ease-in-out infinite;
+              }
+
+              /* ボタンがキラッと光るエフェクト */
+              @keyframes shine {
+                0% { left: -100%; }
+                20% { left: 100%; }
+                100% { left: 100%; }
+              }
+              .btn-shine {
+                position: relative;
+                overflow: hidden;
+              }
+              .btn-shine::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 50%;
+                height: 100%;
+                background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%);
+                transform: skewX(-20deg);
+                animation: shine 3s infinite;
+              }
+            `}
+          </style>
+
+          {/* スマホサイズに制限して表示（Meta広告用LPを想定） */}
+          <div className="max-w-md mx-auto bg-white shadow-2xl min-h-screen relative overflow-hidden pb-24">
+            
+            {/* ヘッダー */}
+            <header className="bg-white/95 backdrop-blur-md fixed top-0 w-full max-w-md z-50 p-4 border-b border-gray-100 flex justify-between items-center shadow-sm">
+              <div className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500 text-xl tracking-wider">
+                SURURIMU
+              </div>
+              <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-5 py-2 rounded-full shadow-md hover:shadow-lg transition-all">
+                詳細を見る
+              </button>
+            </header>
+
+            {/* ヒーローセクション */}
+            <section className="relative pt-16">
+              <div className="relative h-[500px] w-full overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="美味しいご飯" 
+                  className="object-cover w-full h-full scale-105 transform transition-transform duration-[10s] hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
+                
+                {/* 権威性バッジ */}
+                <div className="absolute top-4 right-4 flex flex-col gap-2">
+                  <div className="bg-yellow-400 text-yellow-900 text-[10px] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1 animate-pop-in delay-100">
+                    <i className="fa-solid fa-crown"></i> リピート率98%
+                  </div>
+                  <div className="bg-rose-500 text-white text-[10px] font-extrabold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1 animate-pop-in delay-300">
+                    <i className="fa-solid fa-heart"></i> SNSで話題沸騰
+                  </div>
+                </div>
+
+                <div className="absolute bottom-0 left-0 w-full p-6">
+                  <div className={`inline-block bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-full mb-4 animate-pop-in shadow-lg`}>
+                    食欲旺盛なあなたへ
+                  </div>
+                  <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-tight drop-shadow-2xl">
+                    {isVisible && (
+                      <>
+                        <span className="text-yellow-400 block mb-2 animate-pop-in delay-100">好きなものを</span>
+                        <span className="text-yellow-400 block mb-2 animate-pop-in delay-300">好きなだけ</span>
+                        <span className="block text-3xl mt-2 animate-pop-in delay-500 tracking-wide">食べたい方必見！！</span>
+                      </>
+                    )}
+                  </h1>
+                </div>
+              </div>
+            </section>
+
+            {/* 悩み・共感セクション */}
+            <section className="py-14 px-6 bg-gray-50 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+              <div className="fade-in-section">
+                <h2 className="text-xl font-extrabold text-center mb-8 leading-relaxed">
+                  美味しいもの食べるたびに思う<br/>
+                  <span className="text-orange-500 border-b-2 border-orange-200">こんなことありませんか？</span>
+                </h2>
+                
+                <div className="space-y-6">
+                  <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 relative">
+                    <div className="absolute -top-3 -right-2 rotate-12 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-md shadow-sm">
+                      ジュージュー🥩
+                    </div>
+                    
+                    <div className="flex items-start gap-4 mb-3">
+                      <div className="bg-gradient-to-br from-red-100 to-red-200 p-3 rounded-full text-red-500 shrink-0 mt-1 shadow-inner">
+                        <i className="fa-solid fa-face-frown text-2xl"></i>
+                      </div>
+                      <div>
+                        <p className="font-extrabold text-gray-800 text-lg">食べた後、お腹を気にする</p>
+                        <p className="text-gray-600 text-sm mt-2 leading-relaxed font-medium">
+                          焼肉、ラーメン、スイーツ...<br/>
+                          本当はもっと食べたいのに、食べた直後にぽっこり出たお腹を見て「太るかな、、、」と後悔してしまう。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 relative">
+                    <div className="absolute -bottom-3 -right-2 -rotate-6 bg-red-400 text-white text-xs font-bold px-3 py-1 rounded-md shadow-sm">
+                      ズルズル🍜
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-full text-blue-500 shrink-0 mt-1 shadow-inner">
+                        <i className="fa-solid fa-store text-2xl"></i>
+                      </div>
+                      <div>
+                        <p className="font-extrabold text-gray-800 text-lg">ご飯屋さんに入るか迷う</p>
+                        <p className="text-gray-600 text-sm mt-2 leading-relaxed font-medium">
+                          「食べたい！」という欲望と「太りたくない！」という欲望。<br/>
+                          お店の前でウロウロ...いつもどちらを優先するか葛藤している。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 解決・転換セクション */}
+            <section className="py-16 px-6 bg-gradient-to-b from-orange-50 to-orange-100 relative overflow-hidden">
+              <div className="absolute top-0 left-0 opacity-10 transform -translate-x-4 translate-y-4">
+                <i className="fa-solid fa-wand-magic-sparkles text-8xl text-orange-500"></i>
+              </div>
+              
+              <div className="text-center relative z-10 fade-in-section">
+                <h2 className="text-2xl font-extrabold text-orange-600 leading-snug mb-6">
+                  もう、どちらの気持ちも<br/>
+                  <span className="text-4xl border-b-4 border-orange-400 inline-block mt-2">我慢しなくて良い</span><br/>
+                  んです！
+                </h2>
+                
+                <p className="text-gray-700 font-extrabold mb-8 text-lg bg-white/60 inline-block px-4 py-2 rounded-full">
+                  我慢するダイエットは、絶対に続きません。
+                </p>
+
+                <div className="relative mt-4">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-orange-400 to-yellow-400 rounded-3xl blur opacity-30"></div>
+                  <img 
+                    src="https://images.unsplash.com/photo-1547565311-6677f52554e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                    alt="友達と楽しく焼肉する女性たち" 
+                    className="relative rounded-2xl shadow-xl w-full object-cover h-72 border-4 border-white"
+                  />
+                  <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900 font-extrabold px-8 py-3 rounded-full shadow-xl whitespace-nowrap border-2 border-white">
+                    罪悪感ゼロで美味しく！
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 科学的メカニズム・施術の流れ */}
+            <section className="py-20 px-6 bg-white">
+              <div className="fade-in-section">
+                <div className="text-center mb-12">
+                  <h2 className="text-xs font-extrabold text-orange-500 tracking-[0.3em] mb-2">SCIENTIFIC APPROACH</h2>
+                  <h3 className="text-2xl font-extrabold text-gray-800 leading-tight">
+                    なぜ「食べたい」を<br/>
+                    諦めなくていいの？
+                  </h3>
+                </div>
+
+                <div className="space-y-12">
+                  <div className="relative border-l-4 border-dotted border-orange-200 ml-4 pl-8">
+                    <div className="absolute -left-[14px] top-0 w-6 h-6 bg-gradient-to-br from-orange-400 to-red-500 rounded-full border-4 border-white shadow-md"></div>
+                    <h4 className="font-extrabold text-xl mb-3 text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-500">STEP 01: 脂肪を直接破壊</h4>
+                    <p className="text-sm text-gray-600 leading-relaxed mb-5 font-medium">
+                      スルリムの最新マシンが、自分では落としにくい深層の脂肪細胞を狙い撃ち。細胞膜を緩めて排出されやすい状態にします。
+                    </p>
+                    <div className="bg-orange-50 rounded-2xl p-5 shadow-inner border border-orange-100 flex justify-center items-center gap-4">
+                      <div className="w-14 h-14 bg-yellow-200 rounded-full animate-pulse flex items-center justify-center text-sm font-extrabold text-yellow-700 shadow-md">脂肪</div>
+                      <i className="fa-solid fa-bolt text-3xl text-orange-400"></i>
+                    </div>
+                  </div>
+
+                  <div className="relative border-l-4 border-dotted border-orange-200 ml-4 pl-8">
+                    <div className="absolute -left-[14px] top-0 w-6 h-6 bg-gradient-to-br from-orange-400 to-red-500 rounded-full border-4 border-white shadow-md"></div>
+                    <h4 className="font-extrabold text-xl mb-3 text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-500">STEP 02: 体外へスムーズに排出</h4>
+                    <p className="text-sm text-gray-600 leading-relaxed mb-5 font-medium">
+                      破壊された細胞は老廃物として自然に体外へ。ただ一時的に減らすのではなく、「排出」するのがスルリム流の太りにくい体づくりです。
+                    </p>
+                    <div className="bg-blue-50 rounded-2xl p-5 shadow-inner border border-blue-100 flex justify-center items-center">
+                      <div className="flex items-center gap-3 animate-bounce">
+                        <div className="w-10 h-10 bg-yellow-100 rounded-full blur-[2px]"></div>
+                        <div className="w-6 h-6 bg-yellow-50 rounded-full blur-[2px]"></div>
+                        <i className="fa-solid fa-arrow-right-long text-xl text-blue-400"></i>
+                        <span className="text-sm font-extrabold text-blue-500 tracking-wider">DETOX!</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* 比較セクション（他との違い） */}
+            <section className="py-16 px-6 bg-gray-100">
+              <div className="fade-in-section">
+                <h3 className="text-2xl font-extrabold text-center text-gray-800 mb-10 leading-tight">
+                  普通のダイエットと<br/>何が違うの？
+                </h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  {/* 従来のダイエット */}
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 opacity-80 flex flex-col h-full">
+                    <div className="text-center mb-4">
+                      <p className="text-xs font-bold text-gray-500 mb-1">今までの</p>
+                      <p className="text-base font-extrabold text-gray-700">ダイエット</p>
+                    </div>
+                    <ul className="space-y-5 text-xs text-gray-600 mt-auto">
+                      <li className="flex flex-col items-center text-center gap-2">
+                        <i className="fa-regular fa-circle-xmark text-2xl text-gray-400"></i>
+                        <span className="font-medium">辛い食事制限が<br/>絶対に必要</span>
+                      </li>
+                      <li className="flex flex-col items-center text-center gap-2 border-t border-gray-100 pt-4">
+                        <i className="fa-regular fa-circle-xmark text-2xl text-gray-400"></i>
+                        <span className="font-medium">やめたらすぐに<br/>リバウンド</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* スルリム */}
+                  <div className="bg-gradient-to-b from-orange-50 to-red-50 rounded-2xl shadow-lg border-2 border-orange-400 p-5 transform scale-105 relative z-10 flex flex-col h-full">
+                    <div className="absolute -top-4 -right-3 bg-yellow-400 text-yellow-900 text-xs font-extrabold px-3 py-1.5 rounded-full shadow-md transform rotate-6">
+                      圧倒的ラク！
+                    </div>
+                    <div className="text-center mb-4">
+                      <p className="text-xs font-bold text-orange-600 mb-1">我慢しない</p>
+                      <p className="text-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600">スルリム</p>
+                    </div>
+                    <ul className="space-y-5 text-xs text-gray-800 font-extrabold mt-auto">
+                      <li className="flex flex-col items-center text-center gap-2">
+                        <i className="fa-regular fa-circle-check text-3xl text-orange-500"></i>
+                        <span>好きなものを<br/>食べてOK！</span>
+                      </li>
+                      <li className="flex flex-col items-center text-center gap-2 border-t border-orange-200 pt-4">
+                        <i className="fa-regular fa-circle-check text-3xl text-orange-500"></i>
+                        <span>脂肪を排出するから<br/>戻りにくい！</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* お客様の声 & よくある質問 */}
+            <section className="py-20 px-6 bg-white">
+              <div className="fade-in-section">
+                <div className="text-center mb-12">
+                  <h2 className="text-xs font-extrabold text-orange-500 tracking-[0.3em] mb-2">REVIEWS</h2>
+                  <h3 className="text-2xl font-extrabold text-gray-800 leading-tight">
+                    「もっと早く知りたかった」<br/>喜びの声続々！
+                  </h3>
+                </div>
+
+                <div className="space-y-8 mb-16">
+                  {/* 口コミ1 */}
+                  <div className="bg-orange-50/50 p-6 rounded-3xl relative shadow-sm border border-orange-100">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-4">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="M.A様" className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-md" />
+                        <div>
+                          <p className="text-sm font-extrabold text-gray-700">M.A様 (21歳)</p>
+                          <p className="text-[10px] text-gray-500 font-medium">大学生</p>
+                          <div className="flex text-yellow-400 mt-1">
+                            {[...Array(5)].map((_, i) => <i key={i} className="fa-solid fa-star text-[12px]"></i>)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <h4 className="font-extrabold text-gray-800 mb-3 text-lg leading-snug text-orange-600">「サークルの飲み会後、シメのラーメンも怖くない！」</h4>
+                    <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                      サークルの飲み会や友達とのカフェ巡りが大好きで、いつも体型を気にしていました。スルリムに通い始めてからは罪悪感がゼロに！大好きなラーメンやスイーツを思い切り楽しんでも、スッキリをキープできていて本当に驚きです。
+                    </p>
+                  </div>
+
+                  {/* 口コミ2 */}
+                  <div className="bg-orange-50/50 p-6 rounded-3xl relative shadow-sm border border-orange-100">
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-4">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" alt="Y.K様" className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-md" />
+                        <div>
+                          <p className="text-sm font-extrabold text-gray-700">Y.K様 (24歳)</p>
+                          <p className="text-[10px] text-gray-500 font-medium">会社員</p>
+                          <div className="flex text-yellow-400 mt-1">
+                            {[...Array(5)].map((_, i) => <i key={i} className="fa-solid fa-star text-[12px]"></i>)}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <h4 className="font-extrabold text-gray-800 mb-3 text-lg leading-snug text-orange-600">「キツい運動なし。寝ているだけで良いなんて夢みたい」</h4>
+                    <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                      仕事のストレスで甘いものがやめられず、ジムでの激しい運動はことごとく挫折していました。でもスルリムは本当に「寝ているだけ」。痛みもなくリラックスして受けられるのに、お気に入りのタイトスカートがスッと入るようになりました！
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-gray-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
+                  <div className="absolute -top-10 -right-10 text-gray-800 opacity-50">
+                    <i className="fa-solid fa-circle-question text-9xl"></i>
+                  </div>
+                  <h3 className="text-xl font-extrabold text-center mb-8 text-yellow-400 relative z-10">よくある質問</h3>
+                  <div className="space-y-8 relative z-10">
+                    <div>
+                      <p className="flex items-start gap-3 font-extrabold mb-2 text-lg">
+                        <span className="text-orange-500 text-xl">Q.</span> 痛みはありますか？
+                      </p>
+                      <p className="text-sm text-gray-300 pl-8 leading-relaxed font-medium">
+                        じんわり温かい感覚で、痛みはほとんどありません。リラックスして寝てしまう方も多いですよ。
+                      </p>
+                    </div>
+                    <div className="border-t border-gray-800 pt-6">
+                      <p className="flex items-start gap-3 font-extrabold mb-2 text-lg">
+                        <span className="text-orange-500 text-xl">Q.</span> 本当に食事制限なしでいいの？
+                      </p>
+                      <p className="text-sm text-gray-300 pl-8 leading-relaxed font-medium">
+                        はい！無理な我慢はリバウンドの元。好きなものを食べながら、太りにくい体質を目指すのが私たちのコンセプトです。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* CTAセクション */}
+            <section className="py-20 px-6 bg-gray-900 text-white text-center pb-40">
+              <div className="fade-in-section">
+                <div className="flex justify-center mb-6">
+                  <div className="bg-orange-500/20 p-6 rounded-full">
+                    <i className="fa-solid fa-handshake-angle text-6xl text-orange-400"></i>
+                  </div>
+                </div>
+                <h2 className="text-3xl md:text-4xl font-extrabold leading-tight mb-6">
+                  さあ、あなたも<br/>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">欲張りな生活</span><br/>
+                  始めてみませんか？
+                </h2>
+                <p className="text-gray-400 text-sm mb-8 font-medium leading-relaxed">
+                  好きなものを好きなだけ楽しむ毎日のために。<br/>まずは無料カウンセリングでお話を聞かせてください。
+                </p>
+              </div>
+            </section>
+
+            {/* 固定フッター（CTAボタン） */}
+            <div className="fixed bottom-0 w-full max-w-md bg-white/95 backdrop-blur-md border-t border-gray-200 p-4 z-50 rounded-t-3xl shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
+              <button className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-extrabold text-lg py-4 rounded-2xl shadow-[0_10px_20px_rgba(249,115,22,0.3)] flex items-center justify-center gap-2 transform transition hover:scale-[1.02] active:scale-95 animate-pulse-soft btn-shine">
+                まずは無料カウンセリングへ
+                <i className="fa-solid fa-chevron-right text-xl ml-1"></i>
+              </button>
+              <p className="text-center text-xs text-gray-500 mt-3 font-bold flex items-center justify-center gap-1">
+                <i className="fa-regular fa-clock"></i> 所要時間1分 / 24時間受付中
+              </p>
+            </div>
+
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
